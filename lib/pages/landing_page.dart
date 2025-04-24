@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:inmobiliaria_app/components/image_background.dart';
 import 'package:inmobiliaria_app/pages/properties_page.dart';
 import 'package:inmobiliaria_app/utils/constants.dart';
 import 'package:inmobiliaria_app/widgets/apartment_view.dart';
+import 'package:inmobiliaria_app/widgets/apartment_view_2.dart';
 import 'package:inmobiliaria_app/widgets/feature_section.dart';
 import 'package:inmobiliaria_app/widgets/contact_section.dart';
 import 'package:inmobiliaria_app/widgets/gallery_section.dart';
@@ -124,81 +126,76 @@ class _LandingPageState extends State<LandingPage> {
     return Container(
       key: key,
       height: isSmallScreen ? 900 : 700,
-      color: AppColors.greyLight,
+      // Cambiar a un fondo que combine mejor con la animación
+      decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.white, Color(0xFFF5F5F5)])),
       child:
           isSmallScreen
-              ? Column(children: [_buildHeroInfo(), Expanded(child: AdaptiveApartmentView(onRoomSelected: _updateRoomInfo))])
-              : Container(
-                padding: const EdgeInsets.all(50),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/hero_background.jpg'),
-                    fit: BoxFit.fitWidth,
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.5), // Oscurece la imagen para mejorar la legibilidad del texto
-                      BlendMode.darken,
+              ? Column(children: [_buildHeroInfo(), Expanded(child: AdaptiveApartmentViewV2(onRoomSelected: _updateRoomInfo))])
+              : Stack(
+                fit: StackFit.expand,
+                children: [
+                  // Fondo con carga Lottie
+                  // El BackgroundImageWithLoading es un widget constante que no se reconstruirá
+                  // const BackgroundImageWithLoading(),
+
+                  // Opcional: patrón sutil de fondo
+                  Positioned.fill(child: Opacity(opacity: 0.5, child: Image.asset('assets/images/pattern_bg.jpg', fit: BoxFit.fill))),
+
+                  // Contenido que cambia sobre el fondo
+                  Padding(
+                    padding: const EdgeInsets.all(50),
+                    child: Row(
+                      children: [
+                        // Lado izquierdo - Información del departamento
+                        Expanded(flex: 2, child: _buildHeroInfo()),
+
+                        // Lado derecho - Animación interactiva del departamento
+                        Expanded(flex: 3, child: ApartmentViewV2(onRoomSelected: _updateRoomInfo)),
+                      ],
                     ),
                   ),
-                ),
-                child: Row(
-                  children: [
-                    // Lado izquierdo - Información del departamento
-                    Expanded(flex: 2, child: _buildHeroInfo()),
-
-                    // Lado derecho - Animación interactiva del departamento
-                    Expanded(flex: 3, child: ApartmentView(onRoomSelected: _updateRoomInfo)),
-                  ],
-                ),
+                ],
               ),
     );
   }
 
+  // Para el método _buildHeroInfo, asegúrate de que los textos sean blancos
+  // para que se vean bien contra el fondo oscuro
   Widget _buildHeroInfo() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          'Departamento Premium',
-          style: TextStyle(
-            fontSize: 40,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
-            height: 1.2,
-            color: Colors.white, // Cambia el color del texto para que sea visible sobre la imagen
-          ),
-        ),
-        const SizedBox(height: 20),
-        AnimatedSwitcher(
-          duration: AppAnimations.medium,
-          child: Text(
-            _roomDescription,
-            key: ValueKey<String>(_selectedRoom),
-            style: TextStyle(
-              fontSize: 16,
-              height: 1.5,
-              color: Colors.white.withOpacity(0.9), // Texto blanco con ligera transparencia
+    return Padding(
+      padding: const EdgeInsets.all(0), // Reducido el padding ya que lo aplicamos en el padre
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Departamento Premium',
+            style: AppTextStyles.heading1.copyWith(
+              color: Colors.white, // Asegura que el texto sea visible sobre el fondo
+              shadows: [Shadow(offset: const Offset(1, 1), blurRadius: 3.0, color: Colors.black.withOpacity(0.5))],
             ),
           ),
-        ),
-        const SizedBox(height: 40),
-        Wrap(spacing: 15, runSpacing: 15, children: [_featureBox(Icons.king_bed, '3 Dormitorios'), _featureBox(Icons.bathtub, '2 Baños'), _featureBox(Icons.square_foot, '120 m²')]),
-        const SizedBox(height: 40),
-        ElevatedButton(onPressed: () => _scrollToSection(_contactKey), style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20), backgroundColor: AppColors.primary), child: const Text('AGENDAR UNA VISITA', style: TextStyle(fontSize: 16))),
-      ],
+          const SizedBox(height: 20),
+          AnimatedSwitcher(duration: AppAnimations.medium, child: Text(_roomDescription, key: ValueKey<String>(_selectedRoom), style: AppTextStyles.body.copyWith(color: Colors.white, shadows: [Shadow(offset: const Offset(1, 1), blurRadius: 2.0, color: Colors.black.withOpacity(0.5))]))),
+          const SizedBox(height: 40),
+          Wrap(spacing: 15, runSpacing: 15, children: [_featureBox(Icons.king_bed, '3 Dormitorios'), _featureBox(Icons.bathtub, '2 Baños'), _featureBox(Icons.square_foot, '120 m²')]),
+          const SizedBox(height: 40),
+          ElevatedButton(onPressed: () => _scrollToSection(_contactKey), style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20), backgroundColor: AppColors.primary), child: const Text('AGENDAR UNA VISITA', style: TextStyle(fontSize: 16))),
+        ],
+      ),
     );
   }
 
-  // También deberías modificar el _featureBox para que sea visible sobre la imagen de fondo
+  // Modificar el featureBox para que sea visible sobre fondo oscuro
   Widget _featureBox(IconData icon, String text) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2), // Fondo semi-transparente
-        border: Border.all(color: Colors.white.withOpacity(0.5)),
-        borderRadius: BorderRadius.circular(AppSizes.cardRadius),
+        color: Color(0xFF17B89E).withOpacity(0.1), // Color turquesa similar a la animación
+        border: Border.all(color: Color(0xFF17B89E).withOpacity(0.3)),
+        borderRadius: BorderRadius.circular(16), // Bordes más redondeados
       ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [Icon(icon, color: Colors.white), const SizedBox(width: 8), Text(text, style: TextStyle(color: Colors.white))]),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [Icon(icon, color: Color(0xFF17B89E)), const SizedBox(width: 8), Text(text, style: const TextStyle(color: Color(0xFF333333), fontWeight: FontWeight.w500))]),
     );
   }
 

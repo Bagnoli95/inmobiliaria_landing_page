@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:inmobiliaria_app/utils/constants.dart';
+import 'package:inmobiliaria_app/widgets/loading_image.dart';
 
 class PropertiesPage extends StatefulWidget {
   const PropertiesPage({Key? key}) : super(key: key);
@@ -173,6 +174,7 @@ class _PropertiesPageState extends State<PropertiesPage> {
     );
   }
 
+  // Reemplaza tu método _buildPropertyCard actual por este que incluye el widget de carga
   Widget _buildPropertyCard(Map<String, dynamic> property) {
     return Card(
       elevation: 4,
@@ -183,7 +185,20 @@ class _PropertiesPageState extends State<PropertiesPage> {
           // Imagen de la propiedad
           Stack(
             children: [
-              ClipRRect(borderRadius: const BorderRadius.only(topLeft: Radius.circular(AppSizes.cardRadius), topRight: Radius.circular(AppSizes.cardRadius)), child: Image.asset(property['image'], height: 150, width: double.infinity, fit: BoxFit.cover)),
+              ClipRRect(
+                borderRadius: const BorderRadius.only(topLeft: Radius.circular(AppSizes.cardRadius), topRight: Radius.circular(AppSizes.cardRadius)),
+                child: SizedBox(
+                  height: 150,
+                  width: double.infinity,
+                  child: LoadingImage(
+                    imagePath: property['image'],
+                    fit: BoxFit.cover,
+                    lottieAsset: 'assets/animations/loading_spinner.json',
+                    backgroundColor: Colors.grey[200]!,
+                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(AppSizes.cardRadius), topRight: Radius.circular(AppSizes.cardRadius)),
+                  ),
+                ),
+              ),
               // Etiquetas (Nuevo, Destacado)
               Positioned(
                 top: 10,

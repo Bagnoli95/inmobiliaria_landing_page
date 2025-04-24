@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:inmobiliaria_app/utils/constants.dart';
+import 'package:inmobiliaria_app/widgets/loading_image.dart';
 
 class GallerySection extends StatefulWidget {
   const GallerySection({Key? key}) : super(key: key);
@@ -45,13 +46,18 @@ class _GallerySectionState extends State<GallerySection> {
                       return FadeTransition(opacity: animation, child: child);
                     },
                     child: Container(
-                      key: ValueKey<int>(_selectedImageIndex),
                       height: imageHeight,
                       width: double.infinity,
-                      decoration: BoxDecoration(
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppSizes.imageRadius), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 5))]),
+                      child: ClipRRect(
                         borderRadius: BorderRadius.circular(AppSizes.imageRadius),
-                        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 5))],
-                        image: DecorationImage(image: AssetImage(_imagePaths[_selectedImageIndex]), fit: BoxFit.cover),
+                        child: IndexedStack(
+                          index: _selectedImageIndex,
+                          sizing: StackFit.expand,
+                          children: List.generate(_imagePaths.length, (index) {
+                            return LoadingImage(key: ValueKey<String>(_imagePaths[index]), imagePath: _imagePaths[index], fit: BoxFit.cover, lottieAsset: 'assets/animations/loading_spinner.json', backgroundColor: Colors.grey[200]!);
+                          }),
+                        ),
                       ),
                     ),
                   ),
@@ -77,13 +83,23 @@ class _GallerySectionState extends State<GallerySection> {
                               setState(() {
                                 _selectedImageIndex = index;
                               });
+                              // Agrega un log para depuración
+                              print("Cambiando a imagen $index: ${_imagePaths[index]}");
                             },
                             child: Container(
                               width: 120,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(AppSizes.imageRadius),
-                                border: Border.all(color: _selectedImageIndex == index ? AppColors.primary : Colors.transparent, width: 3),
-                                image: DecorationImage(image: AssetImage(_imagePaths[index]), fit: BoxFit.cover, colorFilter: _selectedImageIndex == index ? null : ColorFilter.mode(Colors.black.withOpacity(0.4), BlendMode.darken)),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppSizes.imageRadius), border: Border.all(color: _selectedImageIndex == index ? AppColors.primary : Colors.transparent, width: 3)),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(AppSizes.imageRadius - 3),
+                                child: Stack(
+                                  children: [
+                                    // Imagen de miniatura con carga
+                                    LoadingImage(imagePath: _imagePaths[index], fit: BoxFit.cover, lottieAsset: 'assets/animations/loading_spinner.json', backgroundColor: Colors.grey[200]!),
+
+                                    // Filtro para miniaturas no seleccionadas
+                                    if (_selectedImageIndex != index) Positioned.fill(child: Container(color: Colors.black.withOpacity(0.4))),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -118,16 +134,20 @@ class _GallerySectionState extends State<GallerySection> {
                     mainAxisSpacing: 20,
                     children: List.generate(6, (index) {
                       return Container(
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppSizes.imageRadius), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 5, offset: const Offset(0, 3))], image: DecorationImage(image: AssetImage(_imagePaths[index]), fit: BoxFit.cover)),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(AppSizes.imageRadius),
-                            onTap: () {
-                              setState(() {
-                                _selectedImageIndex = index;
-                              });
-                            },
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppSizes.imageRadius), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 5, offset: const Offset(0, 3))]),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(AppSizes.imageRadius),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(AppSizes.imageRadius),
+                              onTap: () {
+                                setState(() {
+                                  _selectedImageIndex = index;
+                                });
+                              },
+                              child: LoadingImage(imagePath: _imagePaths[index], fit: BoxFit.cover, lottieAsset: 'assets/animations/loading_spinner.json', backgroundColor: Colors.grey[200]!, borderRadius: BorderRadius.circular(AppSizes.imageRadius)),
+                            ),
                           ),
                         ),
                       );

@@ -14,6 +14,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_svg: ^2.0.9
   google_fonts: ^5.1.0
+  lottie: ^2.7.0
 
 dev_dependencies:
   flutter_test:
@@ -25,9 +26,14 @@ flutter:
   
   assets:
     - assets/
+    # Rive
     - assets/apartment_interactive.riv
-    - assets/images/hero_background.jpg
+    - assets/apartment_interactive_2.riv
+    # Animaciones
+    - assets/animations/
     # Imágenes para la galería
+    - assets/images/hero_background.jpg
+    - assets/images/pattern_bg.jpg
     - assets/images/apartment_1.jpg
     - assets/images/apartment_2.jpg
     - assets/images/apartment_3.jpg

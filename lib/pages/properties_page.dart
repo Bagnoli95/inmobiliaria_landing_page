@@ -53,7 +53,25 @@ class _PropertiesPageState extends State<PropertiesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: const Text('Propiedades'), backgroundColor: AppColors.primary), body: Column(children: [_buildFilters(), Expanded(child: _buildPropertyGrid())]));
+    return Scaffold(
+      appBar: AppBar(title: const Text('Propiedades'), backgroundColor: AppColors.primary),
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildFilters(),
+
+            Expanded(
+              child:
+                  _filteredProperties.isEmpty
+                      ? const Center(child: Text('No se encontraron propiedades con los filtros seleccionados', style: AppTextStyles.body, textAlign: TextAlign.center))
+                      : MediaQuery.of(context).size.width < 600
+                      ? _buildPropertyList() // Vista de lista para móvil
+                      : _buildPropertyGrid(), // Grid para tablets/desktop
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildFilters() {
@@ -266,5 +284,17 @@ class _PropertiesPageState extends State<PropertiesPage> {
 
   Widget _buildPropertyFeature(IconData icon, String text) {
     return Row(children: [Icon(icon, size: 16, color: AppColors.greyDark), const SizedBox(width: 4), Text(text, style: AppTextStyles.bodySmall)]);
+  }
+
+  // Añade este método para vista de lista en móvil
+  Widget _buildPropertyList() {
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: _filteredProperties.length,
+      itemBuilder: (context, index) {
+        final property = _filteredProperties[index];
+        return Padding(padding: const EdgeInsets.only(bottom: 16), child: _buildPropertyCard(property));
+      },
+    );
   }
 }

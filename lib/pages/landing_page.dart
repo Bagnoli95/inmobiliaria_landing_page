@@ -78,7 +78,7 @@ class _LandingPageState extends State<LandingPage> {
       body: Stack(
         children: [
           // Contenido principal con scroll
-          SingleChildScrollView(controller: _scrollController, child: Column(children: [_buildNavBar(isSmallScreen), _buildHeroSection(isSmallScreen, key: _heroKey), FeatureSection(key: _featuresKey), GallerySection(key: _galleryKey), ContactSection(key: _contactKey), _buildFooter()])),
+          SingleChildScrollView(controller: _scrollController, child: Column(children: [_buildNavBar(isSmallScreen), _buildHeroSection(isSmallScreen, key: _heroKey), FeatureSection(key: _featuresKey), GallerySection(key: _galleryKey), ContactSection(key: _contactKey), _buildFooter(isSmallScreen)])),
 
           // Botón flotante para volver arriba (solo visible después de scroll)
           _buildScrollToTopButton(),
@@ -233,74 +233,88 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
-  Widget _buildFooter() {
+  Widget _buildFooter(bool isSmallScreen) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 60, horizontal: AppSizes.contentPadding),
+      padding: EdgeInsets.symmetric(vertical: isSmallScreen ? 30 : 40, horizontal: isSmallScreen ? 20 : AppSizes.contentPadding),
       color: AppColors.primary,
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Logo y descripción
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      child:
+          isSmallScreen
+              ? Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text('INMOBILIARIA', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
+                  Text('INMOBILIARIA', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.5)),
                   const SizedBox(height: 20),
-                  SizedBox(width: 300, child: Text('Propiedades exclusivas para clientes exigentes. Ofrecemos las mejores opciones inmobiliarias en las zonas más privilegiadas.', style: TextStyle(color: Colors.white.withOpacity(0.7), height: 1.6))),
-                  const SizedBox(height: 30),
-                  Row(children: [_socialFooterButton(Icons.facebook), _socialFooterButton(Icons.insert_link), _socialFooterButton(Icons.camera_alt)]),
+                  Padding(padding: EdgeInsets.only(top: isSmallScreen ? 20 : 30), child: Text('© ${DateTime.now().year} Inmobiliaria. Todos los derechos reservados.', textAlign: TextAlign.center, style: TextStyle(fontSize: isSmallScreen ? 12 : 14, color: Colors.white.withOpacity(0.6)))),
                 ],
-              ),
+              )
+              : Column(
+                crossAxisAlignment: CrossAxisAlignment.center, // Centrado para móvi
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Logo y descripción
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('INMOBILIARIA', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
+                          const SizedBox(height: 20),
+                          SizedBox(width: 300, child: Text('Propiedades exclusivas para clientes exigentes. Ofrecemos las mejores opciones inmobiliarias en las zonas más privilegiadas.', style: TextStyle(color: Colors.white.withOpacity(0.7), height: 1.6))),
+                          const SizedBox(height: 30),
+                          Row(children: [_socialFooterButton(Icons.facebook), _socialFooterButton(Icons.insert_link), _socialFooterButton(Icons.camera_alt)]),
+                        ],
+                      ),
 
-              // Enlaces rápidos
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('ENLACES', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.5)),
-                  const SizedBox(height: 20),
-                  _footerLink('Inicio'),
-                  const SizedBox(height: 10),
-                  _footerLink('Propiedades'),
-                  const SizedBox(height: 10),
-                  _footerLink('Características'),
-                  const SizedBox(height: 10),
-                  _footerLink('Galería'),
-                  const SizedBox(height: 10),
-                  _footerLink('Contacto'),
-                ],
-              ),
+                      // Enlaces rápidos
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('ENLACES', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.5)),
+                          const SizedBox(height: 20),
+                          _footerLink('Inicio'),
+                          const SizedBox(height: 10),
+                          _footerLink('Propiedades'),
+                          const SizedBox(height: 10),
+                          _footerLink('Características'),
+                          const SizedBox(height: 10),
+                          _footerLink('Galería'),
+                          const SizedBox(height: 10),
+                          _footerLink('Contacto'),
+                        ],
+                      ),
 
-              // Información de contacto
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('CONTACTO', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.5)),
-                  const SizedBox(height: 20),
-                  _contactInfo(Icons.location_on, 'Av. Principal 123, Ciudad'),
-                  const SizedBox(height: 15),
-                  _contactInfo(Icons.phone, '+1 234 567 890'),
-                  const SizedBox(height: 15),
-                  _contactInfo(Icons.email, 'info@inmobiliaria.com'),
-                  const SizedBox(height: 15),
-                  _contactInfo(Icons.access_time, 'Lun - Vie: 9:00 - 18:00'),
+                      // Información de contacto
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('CONTACTO', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.5)),
+                          const SizedBox(height: 20),
+                          _contactInfo(Icons.location_on, 'Av. Principal 123, Ciudad'),
+                          const SizedBox(height: 15),
+                          _contactInfo(Icons.phone, '+1 234 567 890'),
+                          const SizedBox(height: 15),
+                          _contactInfo(Icons.email, 'info@inmobiliaria.com'),
+                          const SizedBox(height: 15),
+                          _contactInfo(Icons.access_time, 'Lun - Vie: 9:00 - 18:00'),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 40),
+                  Container(height: 1, color: Colors.white.withOpacity(0.1), margin: const EdgeInsets.only(bottom: 30)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('© ${DateTime.now().year} Inmobiliaria. Todos los derechos reservados.', style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 14)),
+                      Row(children: [_footerLinkSmall('Términos y Condiciones'), _footerLinkSmall('Política de Privacidad'), _footerLinkSmall('Cookies')]),
+                    ],
+                  ),
+
+                  // Copyright al final, adaptado para móvil
+                  Padding(padding: EdgeInsets.only(top: isSmallScreen ? 20 : 30), child: Text('© ${DateTime.now().year} Inmobiliaria. Todos los derechos reservados.', textAlign: TextAlign.center, style: TextStyle(fontSize: isSmallScreen ? 12 : 14, color: Colors.white.withOpacity(0.6)))),
                 ],
               ),
-            ],
-          ),
-          const SizedBox(height: 40),
-          Container(height: 1, color: Colors.white.withOpacity(0.1), margin: const EdgeInsets.only(bottom: 30)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('© ${DateTime.now().year} Inmobiliaria. Todos los derechos reservados.', style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 14)),
-              Row(children: [_footerLinkSmall('Términos y Condiciones'), _footerLinkSmall('Política de Privacidad'), _footerLinkSmall('Cookies')]),
-            ],
-          ),
-        ],
-      ),
     );
   }
 

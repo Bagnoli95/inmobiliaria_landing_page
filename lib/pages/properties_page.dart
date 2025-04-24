@@ -165,7 +165,12 @@ class _PropertiesPageState extends State<PropertiesPage> {
 
     return GridView.builder(
       padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.75, crossAxisSpacing: 16, mainAxisSpacing: 16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: 1, // Ajusta este valor (aumentar para hacerlas más pequeñas)
+        crossAxisSpacing: 20, // Aumenta para más espacio horizontal
+        mainAxisSpacing: 25,
+      ),
       itemCount: _filteredProperties.length,
       itemBuilder: (context, index) {
         final property = _filteredProperties[index];
@@ -188,7 +193,7 @@ class _PropertiesPageState extends State<PropertiesPage> {
               ClipRRect(
                 borderRadius: const BorderRadius.only(topLeft: Radius.circular(AppSizes.cardRadius), topRight: Radius.circular(AppSizes.cardRadius)),
                 child: SizedBox(
-                  height: 150,
+                  height: 300,
                   width: double.infinity,
                   child: LoadingImage(
                     imagePath: property['image'],

@@ -49,3 +49,10 @@ flutter:
           weight: 500
         - asset: fonts/Poppins-Bold.ttf
           weight: 700
+    - family: Playfair Display
+      fonts:
+        - asset: fonts/PlayfairDisplay-Regular.ttf
+        - asset: fonts/PlayfairDisplay-Medium.ttf
+          weight: 500
+        - asset: fonts/PlayfairDisplay-Bold.ttf
+          weight: 700

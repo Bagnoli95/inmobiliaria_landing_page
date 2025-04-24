@@ -1,0 +1,45 @@
+name: inmobiliaria_app
+description: Landing page interactiva para inmobiliaria.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  rive: ^0.13.20  # Para animaciones interactivas
+  url_launcher: ^6.1.5  # Para enlaces externos
+  cupertino_icons: ^1.0.2
+  flutter_svg: ^2.0.9
+  google_fonts: ^5.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/
+    - assets/apartment_interactive.riv
+    - assets/images/hero_background.jpg
+    # Imágenes para la galería
+    - assets/images/apartment_1.jpg
+    - assets/images/apartment_2.jpg
+    - assets/images/apartment_3.jpg
+    - assets/images/apartment_4.jpg
+    - assets/images/apartment_5.jpg
+    - assets/images/apartment_6.jpg
+  
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: fonts/Poppins-Regular.ttf
+        - asset: fonts/Poppins-Medium.ttf
+          weight: 500
+        - asset: fonts/Poppins-Bold.ttf
+          weight: 700

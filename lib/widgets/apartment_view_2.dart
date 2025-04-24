@@ -208,10 +208,12 @@ class MobileApartmentView extends StatefulWidget {
 
 class _MobileApartmentViewState extends State<MobileApartmentView> {
   StateMachineController? _riveController;
-  SMIInput<bool>? _tapInputLivingRoom;
-  SMIInput<bool>? _tapInputKitchen;
-  SMIInput<bool>? _tapInputBedroom;
-  SMIInput<bool>? _tapInputBathroom;
+  // Inputs para controlar las animaciones
+  SMIInput<bool>? _hoverInputHoverPuerta;
+  SMIInput<bool>? _hoverInputHoverVentArriba;
+  SMIInput<bool>? _hoverInputHoverVentAbajo;
+  SMIInput<bool>? _hoverInputHoverBalcony;
+  SMIInput<bool>? _hoverInputClouds;
 
   String _selectedRoom = '';
 
@@ -229,10 +231,12 @@ class _MobileApartmentViewState extends State<MobileApartmentView> {
       _riveController = controller;
 
       // En móvil usamos los mismos inputs pero activados con tap en lugar de hover
-      _tapInputLivingRoom = controller.findInput<bool>('HoverLivingRoom');
-      _tapInputKitchen = controller.findInput<bool>('HoverKitchen');
-      _tapInputBedroom = controller.findInput<bool>('HoverBedroom');
-      _tapInputBathroom = controller.findInput<bool>('HoverBathroom');
+      // Conectar con las entradas definidas en Rive
+      _hoverInputHoverPuerta = controller.findInput<bool>('HoverPuerta');
+      _hoverInputHoverVentArriba = controller.findInput<bool>('HoverVentArriba');
+      _hoverInputHoverVentAbajo = controller.findInput<bool>('HoverVentAbajo');
+      _hoverInputHoverBalcony = controller.findInput<bool>('HoverBalcony');
+      _hoverInputClouds = controller.findInput<bool>('HoverClouds');
     }
   }
 
@@ -252,30 +256,31 @@ class _MobileApartmentViewState extends State<MobileApartmentView> {
     setState(() {
       _selectedRoom = room;
 
-      switch (room) {
-        case 'living':
-          if (_tapInputLivingRoom != null) _tapInputLivingRoom!.value = true;
-          break;
-        case 'kitchen':
-          if (_tapInputKitchen != null) _tapInputKitchen!.value = true;
-          break;
-        case 'bedroom':
-          if (_tapInputBedroom != null) _tapInputBedroom!.value = true;
-          break;
-        case 'bathroom':
-          if (_tapInputBathroom != null) _tapInputBathroom!.value = true;
-          break;
-      }
+      // switch (room) {
+      //   case 'living':
+      //     if (_tapInputLivingRoom != null) _tapInputLivingRoom!.value = true;
+      //     break;
+      //   case 'kitchen':
+      //     if (_tapInputKitchen != null) _tapInputKitchen!.value = true;
+      //     break;
+      //   case 'bedroom':
+      //     if (_tapInputBedroom != null) _tapInputBedroom!.value = true;
+      //     break;
+      //   case 'bathroom':
+      //     if (_tapInputBathroom != null) _tapInputBathroom!.value = true;
+      //     break;
+      // }
 
       widget.onRoomSelected(room);
     });
   }
 
   void _resetAllRooms() {
-    if (_tapInputLivingRoom != null) _tapInputLivingRoom!.value = false;
-    if (_tapInputKitchen != null) _tapInputKitchen!.value = false;
-    if (_tapInputBedroom != null) _tapInputBedroom!.value = false;
-    if (_tapInputBathroom != null) _tapInputBathroom!.value = false;
+    if (_hoverInputHoverPuerta != null) _hoverInputHoverPuerta!.value = false;
+    if (_hoverInputHoverBalcony != null) _hoverInputHoverBalcony!.value = false;
+    if (_hoverInputHoverVentAbajo != null) _hoverInputHoverVentAbajo!.value = false;
+    if (_hoverInputHoverVentArriba != null) _hoverInputHoverVentArriba!.value = false;
+    if (_hoverInputClouds != null) _hoverInputClouds!.value = false;
   }
 
   @override
@@ -288,31 +293,31 @@ class _MobileApartmentViewState extends State<MobileApartmentView> {
         return Stack(
           children: [
             // Animación Rive
-            RepaintBoundary(child: RiveAnimation.asset('assets/apartment_interactive.riv', fit: BoxFit.contain, onInit: _onRiveInit)),
+            RepaintBoundary(child: RiveAnimation.asset('assets/apartment_interactive_2.riv', fit: BoxFit.contain, onInit: _onRiveInit)),
 
-            // Áreas para tap en móvil
-            Positioned(top: height * 0.1, left: width * 0.1, width: width * 0.3, height: height * 0.25, child: GestureDetector(onTap: () => _handleRoomTap('living'), child: Container(color: Colors.transparent, child: _roomIndicator(_selectedRoom == 'living')))),
+            // // Áreas para tap en móvil
+            // Positioned(top: height * 0.1, left: width * 0.1, width: width * 0.3, height: height * 0.25, child: GestureDetector(onTap: () => _handleRoomTap('living'), child: Container(color: Colors.transparent, child: _roomIndicator(_selectedRoom == 'living')))),
 
-            Positioned(top: height * 0.1, right: width * 0.1, width: width * 0.3, height: height * 0.25, child: GestureDetector(onTap: () => _handleRoomTap('kitchen'), child: Container(color: Colors.transparent, child: _roomIndicator(_selectedRoom == 'kitchen')))),
+            // Positioned(top: height * 0.1, right: width * 0.1, width: width * 0.3, height: height * 0.25, child: GestureDetector(onTap: () => _handleRoomTap('kitchen'), child: Container(color: Colors.transparent, child: _roomIndicator(_selectedRoom == 'kitchen')))),
 
-            Positioned(bottom: height * 0.15, left: width * 0.15, width: width * 0.25, height: height * 0.25, child: GestureDetector(onTap: () => _handleRoomTap('bedroom'), child: Container(color: Colors.transparent, child: _roomIndicator(_selectedRoom == 'bedroom')))),
+            // Positioned(bottom: height * 0.15, left: width * 0.15, width: width * 0.25, height: height * 0.25, child: GestureDetector(onTap: () => _handleRoomTap('bedroom'), child: Container(color: Colors.transparent, child: _roomIndicator(_selectedRoom == 'bedroom')))),
 
-            Positioned(bottom: height * 0.15, right: width * 0.15, width: width * 0.2, height: height * 0.2, child: GestureDetector(onTap: () => _handleRoomTap('bathroom'), child: Container(color: Colors.transparent, child: _roomIndicator(_selectedRoom == 'bathroom')))),
+            // Positioned(bottom: height * 0.15, right: width * 0.15, width: width * 0.2, height: height * 0.2, child: GestureDetector(onTap: () => _handleRoomTap('bathroom'), child: Container(color: Colors.transparent, child: _roomIndicator(_selectedRoom == 'bathroom')))),
 
             // Instrucciones para el usuario
-            if (_selectedRoom.isEmpty)
-              Positioned(
-                bottom: 20,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(color: Colors.black.withOpacity(0.6), borderRadius: BorderRadius.circular(20)),
-                    child: const Text('Toca en las habitaciones para explorar', style: TextStyle(color: Colors.white, fontSize: 14)),
-                  ),
+            // if (_selectedRoom.isEmpty)
+            Positioned(
+              bottom: 20,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(color: Colors.black.withOpacity(0.6), borderRadius: BorderRadius.circular(20)),
+                  child: const Text('Toca en las habitaciones para explorar', style: TextStyle(color: Colors.white, fontSize: 14)),
                 ),
               ),
+            ),
           ],
         );
       },

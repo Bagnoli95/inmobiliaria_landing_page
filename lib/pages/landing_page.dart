@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:inmobiliaria_app/components/image_background.dart';
 import 'package:inmobiliaria_app/pages/properties_page.dart';
 import 'package:inmobiliaria_app/utils/constants.dart';
-import 'package:inmobiliaria_app/widgets/apartment_view.dart';
 import 'package:inmobiliaria_app/widgets/apartment_view_2.dart';
 import 'package:inmobiliaria_app/widgets/feature_section.dart';
 import 'package:inmobiliaria_app/widgets/contact_section.dart';

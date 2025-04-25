@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:inmobiliaria_app/pages/landing_page.dart';
+import 'package:inmobiliaria_app/pages/landing_pageTest.dart';
 import 'package:inmobiliaria_app/utils/constants.dart';
 
 void main() {
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
         ),
       ),
-      home: const LandingPage(),
+      home: const LandingPageT(),
     );
   }
 }

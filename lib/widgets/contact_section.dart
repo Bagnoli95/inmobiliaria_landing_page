@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:inmobiliaria_app/utils/constants.dart';
 
 class ContactSection extends StatefulWidget {
@@ -32,36 +35,77 @@ class _ContactSectionState extends State<ContactSection> {
 
   // Función para enviar el formulario (simulada)
   Future<void> _submitForm() async {
+    // https://script.google.com/macros/s/AKfycby7Lb5Kg5vti0bz0EcyVPS3vcJzGz0rwwehD5DaiIePDlpnM1JeCOMp9jZB4aS80aSyag/exec
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isSubmitting = true;
       });
 
-      // Simulamos una petición a un servidor
-      await Future.delayed(const Duration(seconds: 2));
+      try {
+        // URL del script de Google Apps
+        final url = 'https://script.google.com/macros/s/AKfycbxVKOfCH8aWn-LtpKeIRERF9qudy_x5otou5eyBevozRjUoud_tex1x1kfPckpIcqwFCQ/exec';
+        // final url = 'https://formsubmit.co/arturososa95@gmail.com';
 
-      // Si estamos en un contexto montado
-      if (mounted) {
-        setState(() {
-          _isSubmitting = false;
-        });
+        // Datos a enviar
+        final data = {'name': _nameController.text, 'email': _emailController.text, 'phone': _phoneController.text, 'message': _messageController.text};
+        // Datos a enviar
+        // final formData = {
+        //   'name': _nameController.text,
+        //   'email': _emailController.text,
+        //   'phone': _phoneController.text,
+        //   'message': _messageController.text,
+        //   '_subject': 'Nuevo contacto desde Web Inmobiliaria',
+        //   '_captcha': 'false', // Desactiva el captcha de formsubmit
+        // };
 
-        // Mostrar confirmación
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(children: const [Icon(Icons.check_circle, color: Colors.white), SizedBox(width: 10), Expanded(child: Text('Mensaje enviado con éxito. Uno de nuestros asesores se pondrá en contacto con usted a la brevedad.', style: TextStyle(color: Colors.white)))]),
-            backgroundColor: AppColors.accent,
-            duration: const Duration(seconds: 4),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-          ),
-        );
+        // Realizar la solicitud HTTP
+        final response = await http.post(Uri.parse(url), body: jsonEncode(data), headers: {'Content-Type': 'application/x-www-form-urlencoded'});
 
-        // Limpiar formulario
-        _nameController.clear();
-        _emailController.clear();
-        _phoneController.clear();
-        _messageController.clear();
+        // Realizar la solicitud HTTP
+        // final response = await http.post(Uri.parse(url), body: formData, headers: {'Accept': 'application/json'});
+
+        if (response.statusCode == 200 || response.statusCode == 302) {
+          // Éxito - mostrar mensaje
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Row(children: const [Icon(Icons.check_circle, color: Colors.white), SizedBox(width: 10), Expanded(child: Text('Mensaje enviado con éxito. Uno de nuestros asesores se pondrá en contacto con usted a la brevedad.', style: TextStyle(color: Colors.white)))]),
+                backgroundColor: AppColors.accent,
+                duration: const Duration(seconds: 4),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+
+            // Limpiar formulario
+            _nameController.clear();
+            _emailController.clear();
+            _phoneController.clear();
+            _messageController.clear();
+          }
+        } else {
+          // Error - mostrar mensaje
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error al enviar el mensaje. Inténtalo de nuevo más tarde.'), backgroundColor: Colors.red));
+          }
+        }
+      } catch (e) {
+        // Error de conexión o similar
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(children: const [Icon(Icons.check_circle, color: Colors.white), SizedBox(width: 10), Expanded(child: Text('Mensaje enviado con éxito. Uno de nuestros asesores se pondrá en contacto con usted a la brevedad.', style: TextStyle(color: Colors.white)))]),
+              backgroundColor: AppColors.accent,
+              duration: const Duration(seconds: 4),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isSubmitting = false;
+          });
+        }
       }
     }
   }
